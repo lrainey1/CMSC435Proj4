@@ -13,7 +13,7 @@ OBJECTS = meshfair.o
 
 #-----------------------------------------
 # 
-INCS = -I/usr/include/eigen3 -I/usr/local/include/eigen-3.3.8/
+INCS = -I/usr/include/eigen3 -I/usr/local/include/eigen-3.3.8/ 
 LIBS =
 
 CCOPTS = $(OPT) $(FLAGS) $(INCS)  

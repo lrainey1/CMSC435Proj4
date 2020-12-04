@@ -8,30 +8,14 @@
 
 #include "io.cpp"
 
-//void readObj(std::string objIn, std::vector<Eigen::Vector3d> pts, std::vector<Triangle> tris){
-	//std::ifstream in(objIn.c_str(), std::ios_base::in);
-	//std::string line;
-  //	//Fill fill;
-//	while (in){
-//		getline(in, line);
-//		if(line.substr(0,1)=="v"){
-			//double x,y,z;
-//			Eigen::Vector3d v;	
-//			std::stringstream ss(line.substr(2));
-//			ss>>v[0]>>v[1]>>v[2];
-//			pts.push_back(v);			
-//		} else{
-//			std::stringstream ss(line.substr(2));
-//			Eigen::Vector3d v;
-//			ss>>v[0]>>v[1]>>v[2];
-//			//tris.push_back(new Triangle(v[0],v[1],v[2]));			
-//		}
-//	}
-
-//}
-
-//void writeObj(std::string objOut, std::vector<Eigen::Vector3d> pts, std::vector<Triangle> tris){
-//}
+void subdivide(char *argv[], std::vector<Tri> tris, std::vector<Eigen::Vector3d> pts){
+	for(int j=0; j<tris.size(); j++){
+		pts[tris[j][0]] = 2*pts[tris[j][0]] + (0.1875)*(pts[tris[j][0]]+pts[tris[j][1]]+pts[tris[j][2]]);
+		pts[tris[j][1]] = (1-3)*pts[tris[j][1]] + (3/16)*(pts[tris[j][0]]+pts[tris[j][1]]+pts[tris[j][2]]);
+		pts[tris[j][2]] = (1-3)*pts[tris[j][2]] + (3/16)*(pts[tris[j][0]]+pts[tris[j][1]]+pts[tris[j][2]]);
+	}
+	writeObjFile(argv[2], pts, tris);
+}
 
 int main(int argc, char *argv[]){
 	std::vector<Tri> tris;
@@ -42,7 +26,21 @@ int main(int argc, char *argv[]){
 	bool fileOpen = readObjFile(argv[1], pts, tris);
 	if(!fileOpen){	
 		printf("File Failed \n");
+		return 0;
 	}
+
+	if(argc>5){
+		std::string argID = argv[5];
+		//printf("%s\n", argID);
+		if(argID == "-s"){
+			int eps = atoi(argv[6]);
+			printf("woosh %d\n", pts[tris[1][1]]);
+			subdivide(argv,tris,pts);
+			return 0;	
+		}
+	}
+
+	
 	for(int i=0; i<atoi(argv[4]); i++){
 		for(int j=0; j<pts.size(); j++){
 			m.push_back(0);
